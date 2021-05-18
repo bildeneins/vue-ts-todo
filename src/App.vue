@@ -1,7 +1,9 @@
 <template>
-  <div id="app">
-    <todo-list />
-  </div>
+  <v-app id="app">
+    <v-main>
+      <todo-list />
+    </v-main>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -16,13 +18,14 @@ import TodoList from './components/TodoList.vue';
 export default class App extends Vue {}
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  padding: 50px;
+  background: center / cover no-repeat url('~@/assets/background.jpg');
 }
 </style>

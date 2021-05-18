@@ -1,26 +1,49 @@
 <template>
-  <div class="todo-item">
-    {{todo.label}}&nbsp;{{todo.done}}
-  </div>
+  <v-list-item class="mb-2">
+    <v-list-item-icon>
+      <v-icon
+          v-text="checkboxIcon"
+          @click="onCheckBoxClicked"
+      />
+    </v-list-item-icon>
+    <v-list-item-content>
+      <v-list-item-title class="text-left" v-text="todo.label" />
+    </v-list-item-content>
+    <v-list-item-icon>
+      <v-icon @click="onDeleteButtonClicked">
+        mdi-trash-can
+      </v-icon>
+    </v-list-item-icon>
+  </v-list-item>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 export interface Todo {
+  id: string
   label: string
-  done: boolean
+  finished: boolean
 }
 
 @Component
 export default class TodoItem extends Vue {
   @Prop({required: true}) todo!: Todo
-  
+
+  get checkboxIcon(): string {
+    if (this.todo.finished) return 'mdi-checkbox-marked-outline'
+    else return 'mdi-checkbox-blank-outline'
+  }
+
+  onCheckBoxClicked(): void {
+    this.$emit('click:checkbox')
+  }
+
+  onDeleteButtonClicked(): void {
+    this.$emit('click:delete')
+  }
 }
 </script>
 
 <style scoped>
-.todo-item {
-  border: 1px solid black;
-}
 </style>
