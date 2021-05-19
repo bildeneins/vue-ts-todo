@@ -1,5 +1,5 @@
 <template>
-  <v-list-item class="mb-2">
+  <v-list-item class="mb-2" dense>
     <v-list-item-icon>
       <v-icon
           v-text="checkboxIcon"
@@ -27,7 +27,7 @@ export interface Todo {
 }
 
 @Component
-export default class TodoItem extends Vue {
+export default class TodoListItem extends Vue {
   @Prop({required: true}) todo!: Todo
 
   get checkboxIcon(): string {

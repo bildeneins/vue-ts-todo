@@ -1,28 +1,28 @@
 <template>
-  <div>
+  <div v-resize="onResize">
     <v-text-field
         v-model="input"
         placeholder="新しいタスクを入力..."
         solo
         @keydown.enter="onEnterTaskName"
     ></v-text-field>
-    <v-card>
-      <v-toolbar
-        color="primary"
-      >
-        {{todos.length}} 個のタスクが残っています
+    <v-card class="todo-list-card" elevation="5">
+      <v-toolbar flat class="toolbar">
+        <div class="num-task-unfinished">
+          未完了のタスク: {{todos.length}}個
+        </div>
         <v-spacer />
-        <v-btn-toggle v-model="toggle_filter_index">
+        <v-btn-toggle dense v-model="toggle_filter_index">
           <v-btn>すべてのタスク</v-btn>
           <v-btn>完了済み</v-btn>
           <v-btn>未完了</v-btn>
         </v-btn-toggle>
       </v-toolbar>
       <v-divider />
-      <v-list>
+      <v-list :max-height="listHeight" class="overflow-y-auto">
         <template v-for="(item, index) in filteredTodos">
           <v-divider v-if="index !== 0" :key="'divider-top-' + item.id" />
-          <todo-item
+          <todo-list-item
               :key="'list-' + item.id"
               :todo="item"
               @click:checkbox="toggleFinished(item)"
@@ -32,24 +32,29 @@
         </template>
       </v-list>
     </v-card>
-    <v-btn class="secondary my-5" block @click="deleteFinishedTodos">完了済みのタスクを削除</v-btn>
+    <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="deleteFinishedTodos">
+      <v-icon>mdi-trash-can</v-icon>
+      完了済みのタスクを削除
+    </v-btn>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import TodoItem, { Todo }  from '@/components/TodoItem.vue'
+import TodoListItem, { Todo }  from '@/components/TodoListItem.vue'
 import { uuid } from 'vue-uuid'
 
 @Component({
   components: {
-    TodoItem
+    TodoListItem: TodoListItem
   }
 })
 export default class TodoList extends Vue {
   todos: Todo[] = []
   input = ''
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
+  listHeightMargin = 370
+  listHeight: number = window.innerHeight - this.listHeightMargin;
 
   get toggle_filter_index(): number {
     return ['all', 'finished', 'unfinished'].indexOf(this.filter)
@@ -114,7 +119,24 @@ export default class TodoList extends Vue {
   clearInput(): void {
     this.input = ''
   }
+
+  onResize(): void {
+    this.listHeight = window.innerHeight - this.listHeightMargin;
+  }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.todo-list-card {
+  border-top: 10px solid teal;
+}
+.btn-delete {
+  font-weight: bold;
+  font-size: large;
+}
+.num-task-unfinished {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+</style>
