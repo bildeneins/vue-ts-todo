@@ -32,10 +32,47 @@
         </template>
       </v-list>
     </v-card>
-    <v-btn elevation="5" class=" my-5 btn-delete" block @click="completeTodos">
-      <v-icon>mdi-check</v-icon>
-      全て完了済みにする
-    </v-btn>
+    <v-dialog
+        v-model="dialog"
+        max-width="400"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            elevation="5"
+            class=" my-5 btn-finishall"
+            block
+            v-bind="attrs"
+            v-on="on"
+        >
+          <v-icon>mdi-check</v-icon>
+          全て完了済みにする
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="my-5 btn-finishall">
+          全てのタスクを完了済みにしますか？
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              color="secondary"
+              class="btn-finishall"
+              text
+              @click="dialog = false"
+          >
+            いいえ
+          </v-btn>
+          <v-btn
+              color="secondary"
+              class="btn-finishall"
+              text
+              @click="completeAllTodos"
+          >
+            はい
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="deleteFinishedTodos">
       <v-icon>mdi-trash-can</v-icon>
@@ -59,7 +96,8 @@ export default class TodoList extends Vue {
   input = ''
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
   listHeightMargin = 370
-  listHeight: number = window.innerHeight - this.listHeightMargin;
+  listHeight: number = window.innerHeight - this.listHeightMargin
+  dialog = false;
 
   get toggle_filter_index(): number {
     return ['all', 'finished', 'unfinished'].indexOf(this.filter)
@@ -121,10 +159,9 @@ export default class TodoList extends Vue {
     this.todos = this.todos.filter(todo => !todo.finished)
   }
 
-  completeTodos(): void{
-    if(confirm('全てのタスクを完了済みにしますか？')){
-      this.todos = this.todos.filter(todo => todo.finished = true)
-    }
+  completeAllTodos(): void {
+    this.todos = this.todos.filter(todo => todo.finished = true)
+    this.dialog = false
   }
 
   clearInput(): void {
@@ -142,6 +179,10 @@ export default class TodoList extends Vue {
   border-top: 10px solid teal;
 }
 .btn-delete {
+  font-weight: bold;
+  font-size: large;
+}
+.btn-finishall {
   font-weight: bold;
   font-size: large;
 }
