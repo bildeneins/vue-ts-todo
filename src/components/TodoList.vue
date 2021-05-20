@@ -122,9 +122,10 @@ export default class TodoList extends Vue {
   }
 
   completeTodos(): void{
-    if(!alert('全てのタスクを完了済みにしますか？')){
+    if(confirm('全てのタスクを完了済みにしますか？')){
       this.todos = this.todos.filter(todo => todo.finished = true)
     }
+
   }
 
   clearInput(): void {
