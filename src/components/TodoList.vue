@@ -125,7 +125,6 @@ export default class TodoList extends Vue {
     if(confirm('全てのタスクを完了済みにしますか？')){
       this.todos = this.todos.filter(todo => todo.finished = true)
     }
-
   }
 
   clearInput(): void {
