@@ -14,6 +14,11 @@
         mdi-trash-can
       </v-icon>
     </v-list-item-icon>
+    <v-list-item-icon>
+      <v-icon @click="onRenameButtonClicked">
+        mdi-pencil
+      </v-icon>
+    </v-list-item-icon>
   </v-list-item>
 </template>
 
@@ -41,6 +46,9 @@ export default class TodoListItem extends Vue {
 
   onDeleteButtonClicked(): void {
     this.$emit('click:delete')
+  }
+  onRenameButtonClicked(): void {
+    this.$emit("click:rename")
   }
 }
 </script>

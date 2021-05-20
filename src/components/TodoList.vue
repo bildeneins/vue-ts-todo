@@ -1,12 +1,17 @@
 <template>
   <div v-resize="onResize">
+    <RenameDialog
+        :dialog="dialog"
+        @sendLabel="getLabel"
+        @sendClose="closeDialog"
+    ></RenameDialog>
     <v-text-field
         v-model="input"
         placeholder="新しいタスクを入力..."
         solo
         @keydown.enter="onEnterTaskName"
     ></v-text-field>
-    <v-card class="todo-list-card" elevation="5">
+    <v-card class="todo-list-card" elevation="8">
       <v-toolbar flat class="toolbar">
         <div class="num-task-unfinished">
           未完了のタスク: {{todos.length}}個
@@ -27,6 +32,7 @@
               :todo="item"
               @click:checkbox="toggleFinished(item)"
               @click:delete="deleteTodo(item)"
+              @click:rename="renameTodo(item)"
           />
           <v-divider v-if="index === todos.length" :key="'divider-bottom-' + item.id" />
         </template>
@@ -42,16 +48,19 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import TodoListItem, { Todo }  from '@/components/TodoListItem.vue'
+import RenameDialog from '@/components/RenameDialog.vue'
 import { uuid } from 'vue-uuid'
 
 @Component({
   components: {
-    TodoListItem: TodoListItem
+    TodoListItem: TodoListItem,
+    RenameDialog: RenameDialog
   }
 })
 export default class TodoList extends Vue {
   todos: Todo[] = []
   input = ''
+  dialog=false
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
   listHeightMargin = 370
   listHeight: number = window.innerHeight - this.listHeightMargin;
@@ -109,7 +118,28 @@ export default class TodoList extends Vue {
   }
 
   deleteTodo(todo: Todo): void {
+    alert(this.todos.length)
     this.todos = this.todos.filter(i => i.id !== todo.id)
+  }
+  renameId=""
+  renameTodo(todo: Todo): void {
+    this.dialog=true
+    this.renameId=todo.id
+
+  }
+  getLabel(s:string):void{
+    if(s){
+      for(let i=0; i < this.todos.length;i++){
+        if(this.todos[i].id==this.renameId){
+          this.todos[i].label = s
+        }
+      }
+      this.renameId=""
+      this.dialog=false
+    }
+  }
+  closeDialog():void{
+    this.dialog=false
   }
 
   deleteFinishedTodos(): void {
