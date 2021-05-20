@@ -32,7 +32,7 @@ html {
   color: #2c3e50;
   padding: 50px;
   height: 100%;
-  background: center / cover no-repeat url('~@/assets/background2.jpg');
+  background: center / cover no-repeat url('./assets/background.jpg');
 }
 
 .draggable {
