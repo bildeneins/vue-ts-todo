@@ -32,10 +32,35 @@
         </template>
       </v-list>
     </v-card>
-    <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="deleteFinishedTodos">
+    <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="onClickDeleteFinishedTodos">
       <v-icon>mdi-trash-can</v-icon>
       完了済みのタスクを削除
     </v-btn>
+    <v-dialog
+      v-model="showDeleteFinishedTodosDialog"
+      persistent
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title>
+          <v-icon>mdi-alert</v-icon>確認
+        </v-card-title>
+        <v-card-text>
+          完了済みの全てのタスクを
+          消去してよろしいですか？
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="onConfirmDeleteFinishedTodos"
+          >
+            OK
+          </v-btn>
+          <v-btn @click="showDeleteFinishedTodosDialog = false">キャンセル</v-btn>
+        </v-card-actions>
+        </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -54,7 +79,8 @@ export default class TodoList extends Vue {
   input = ''
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
   listHeightMargin = 370
-  listHeight: number = window.innerHeight - this.listHeightMargin;
+  listHeight: number = window.innerHeight - this.listHeightMargin
+  showDeleteFinishedTodosDialog = false
 
   get toggle_filter_index(): number {
     return ['all', 'finished', 'unfinished'].indexOf(this.filter)
@@ -122,6 +148,15 @@ export default class TodoList extends Vue {
 
   onResize(): void {
     this.listHeight = window.innerHeight - this.listHeightMargin;
+  }
+
+  onClickDeleteFinishedTodos(): void {
+    this.showDeleteFinishedTodosDialog = true
+  }
+
+  onConfirmDeleteFinishedTodos(): void {
+    this.deleteFinishedTodos()
+    this.showDeleteFinishedTodosDialog = false
   }
 }
 </script>
