@@ -32,6 +32,11 @@
         </template>
       </v-list>
     </v-card>
+    <v-btn elevation="5" class=" my-5 btn-delete" block @click="completeTodos">
+      <v-icon>mdi-check</v-icon>
+      全て完了済みにする
+    </v-btn>
+
     <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="deleteFinishedTodos">
       <v-icon>mdi-trash-can</v-icon>
       完了済みのタスクを削除
@@ -114,6 +119,12 @@ export default class TodoList extends Vue {
 
   deleteFinishedTodos(): void {
     this.todos = this.todos.filter(todo => !todo.finished)
+  }
+
+  completeTodos(): void{
+    if(!alert('全てのタスクを完了済みにしますか？')){
+      this.todos = this.todos.filter(todo => todo.finished = true)
+    }
   }
 
   clearInput(): void {
