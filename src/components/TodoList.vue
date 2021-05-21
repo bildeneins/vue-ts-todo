@@ -42,6 +42,10 @@
       <v-icon>mdi-trash-can</v-icon>
       完了済みのタスクを削除
     </v-btn>
+    <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="saveTodos">
+      <v-icon>mdi-file-download</v-icon>
+      現在のタスクをファイルに保存
+    </v-btn>
   </div>
 </template>
 
@@ -145,6 +149,16 @@ export default class TodoList extends Vue {
 
   deleteFinishedTodos(): void {
     this.todos = this.todos.filter(todo => !todo.finished)
+  }
+
+  saveTodos(): void {
+    //保存するファイルの名前
+    const savedTodos = "savedTodos.json"
+    const data = JSON.stringify(this.todos,null,2)
+    const a = document.createElement('a')
+    a.href = "data:text/plain," + encodeURIComponent(data)
+    a.download = savedTodos
+    a.click()
   }
 
   clearInput(): void {
