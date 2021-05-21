@@ -10,6 +10,11 @@
       <v-list-item-title class="text-left" v-text="todo.label" />
     </v-list-item-content>
     <v-list-item-icon>
+      <v-icon @click="onRenameButtonClicked">
+        mdi-pencil
+      </v-icon>
+    </v-list-item-icon>
+    <v-list-item-icon>
       <v-icon @click="onDeleteButtonClicked">
         mdi-trash-can
       </v-icon>
@@ -41,6 +46,9 @@ export default class TodoListItem extends Vue {
 
   onDeleteButtonClicked(): void {
     this.$emit('click:delete')
+  }
+  onRenameButtonClicked(): void {
+    this.$emit("click:rename")
   }
 }
 </script>

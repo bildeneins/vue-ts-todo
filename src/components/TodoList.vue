@@ -1,5 +1,10 @@
 <template>
   <div v-resize="onResize">
+    <RenameDialog
+        :dialog="dialog"
+        @decide="onRenameDialogSaved"
+        @cancel="closeRenameDialog"
+    />
     <v-text-field
         v-model="input"
         placeholder="新しいタスクを入力..."
@@ -27,6 +32,7 @@
               :todo="item"
               @click:checkbox="toggleFinished(item)"
               @click:delete="deleteTodo(item)"
+              @click:rename="renameTodo(item)"
           />
           <v-divider v-if="index === todos.length" :key="'divider-bottom-' + item.id" />
         </template>
@@ -36,22 +42,29 @@
       <v-icon>mdi-trash-can</v-icon>
       完了済みのタスクを削除
     </v-btn>
+    <v-btn elevation="5" class="secondary my-5 btn-delete" block @click="saveTodos">
+      <v-icon>mdi-file-download</v-icon>
+      現在のタスクをファイルに保存
+    </v-btn>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import TodoListItem, { Todo }  from '@/components/TodoListItem.vue'
+import RenameDialog from '@/components/RenameDialog.vue'
 import { uuid } from 'vue-uuid'
 
 @Component({
   components: {
-    TodoListItem: TodoListItem
+    TodoListItem: TodoListItem,
+    RenameDialog: RenameDialog
   }
 })
 export default class TodoList extends Vue {
   todos: Todo[] = []
   input = ''
+  dialog = false
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
   listHeightMargin = 370
   listHeight: number = window.innerHeight - this.listHeightMargin;
@@ -112,8 +125,40 @@ export default class TodoList extends Vue {
     this.todos = this.todos.filter(i => i.id !== todo.id)
   }
 
+  renameId = ""
+  renameTodo(todo: Todo): void {
+    this.dialog = true
+    this.renameId = todo.id
+  }
+
+  onRenameDialogSaved(todoLabel: string): void{
+    if(todoLabel){
+      for(let i=0; i < this.todos.length; i++){
+        if(this.todos[i].id == this.renameId){
+          this.todos[i].label = todoLabel
+        }
+      }
+      this.renameId = ""
+      this.closeRenameDialog()
+    }
+  }
+
+  closeRenameDialog(): void{
+    this.dialog = false
+  }
+
   deleteFinishedTodos(): void {
     this.todos = this.todos.filter(todo => !todo.finished)
+  }
+
+  saveTodos(): void {
+    //保存するファイルの名前
+    const savedTodos = "savedTodos.json"
+    const data = JSON.stringify(this.todos,null,2)
+    const a = document.createElement('a')
+    a.href = "data:text/plain," + encodeURIComponent(data)
+    a.download = savedTodos
+    a.click()
   }
 
   clearInput(): void {
