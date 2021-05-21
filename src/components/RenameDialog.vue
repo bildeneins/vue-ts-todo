@@ -7,16 +7,16 @@
     >
       <v-card>
         <v-card-title>
-          <span class="headline">名前を変える</span>
+          <span class="headline">タスク名を変える</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                    label="名前を変える"
+                    label="入力してください"
                     required
-                    v-model="toDoRename"
+                    v-model="todoRename"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -28,7 +28,7 @@
           <v-btn
               color="blue darken-1"
               text
-              @click="close"
+              @click="cancel"
           >
             Cancel
           </v-btn>
@@ -50,21 +50,21 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component
 export default class TodoListItem extends Vue {
-  toDoRename=""
+
   @Prop({default: false})
   dialog!: boolean;
 
+  todoRename = ""
+
   rename():void{
-    this.$emit("sendLabel", this.toDoRename)
-    this.toDoRename=""
-
-  }
-  close():void{
-    this.$emit("sendClose")
+    this.$emit("decide", this.todoRename)
+    this.todoRename = ""
   }
 
-
-
+  cancel():void{
+    this.$emit("cancel")
+    this.todoRename = ""
+  }
 }
 </script>
 

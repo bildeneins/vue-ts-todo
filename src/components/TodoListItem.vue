@@ -10,13 +10,13 @@
       <v-list-item-title class="text-left" v-text="todo.label" />
     </v-list-item-content>
     <v-list-item-icon>
-      <v-icon @click="onDeleteButtonClicked">
-        mdi-trash-can
+      <v-icon @click="onRenameButtonClicked">
+        mdi-pencil
       </v-icon>
     </v-list-item-icon>
     <v-list-item-icon>
-      <v-icon @click="onRenameButtonClicked">
-        mdi-pencil
+      <v-icon @click="onDeleteButtonClicked">
+        mdi-trash-can
       </v-icon>
     </v-list-item-icon>
   </v-list-item>

@@ -2,16 +2,16 @@
   <div v-resize="onResize">
     <RenameDialog
         :dialog="dialog"
-        @sendLabel="getLabel"
-        @sendClose="closeDialog"
-    ></RenameDialog>
+        @decide="onRenameDialogSaved"
+        @cancel="closeRenameDialog"
+    />
     <v-text-field
         v-model="input"
         placeholder="新しいタスクを入力..."
         solo
         @keydown.enter="onEnterTaskName"
     ></v-text-field>
-    <v-card class="todo-list-card" elevation="8">
+    <v-card class="todo-list-card" elevation="5">
       <v-toolbar flat class="toolbar">
         <div class="num-task-unfinished">
           未完了のタスク: {{todos.length}}個
@@ -60,7 +60,7 @@ import { uuid } from 'vue-uuid'
 export default class TodoList extends Vue {
   todos: Todo[] = []
   input = ''
-  dialog=false
+  dialog = false
   private filter: 'all' | 'finished' | 'unfinished' = 'all'
   listHeightMargin = 370
   listHeight: number = window.innerHeight - this.listHeightMargin;
@@ -118,28 +118,29 @@ export default class TodoList extends Vue {
   }
 
   deleteTodo(todo: Todo): void {
-    alert(this.todos.length)
     this.todos = this.todos.filter(i => i.id !== todo.id)
   }
-  renameId=""
-  renameTodo(todo: Todo): void {
-    this.dialog=true
-    this.renameId=todo.id
 
+  renameId = ""
+  renameTodo(todo: Todo): void {
+    this.dialog = true
+    this.renameId = todo.id
   }
-  getLabel(s:string):void{
-    if(s){
-      for(let i=0; i < this.todos.length;i++){
-        if(this.todos[i].id==this.renameId){
-          this.todos[i].label = s
+
+  onRenameDialogSaved(todoLabel: string): void{
+    if(todoLabel){
+      for(let i=0; i < this.todos.length; i++){
+        if(this.todos[i].id == this.renameId){
+          this.todos[i].label = todoLabel
         }
       }
-      this.renameId=""
-      this.dialog=false
+      this.renameId = ""
+      this.closeRenameDialog()
     }
   }
-  closeDialog():void{
-    this.dialog=false
+
+  closeRenameDialog(): void{
+    this.dialog = false
   }
 
   deleteFinishedTodos(): void {
